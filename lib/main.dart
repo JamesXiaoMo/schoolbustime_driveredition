@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GPS Example',
+      title: 'SchoolBusTime Driver Edition',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -27,6 +30,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _locationMessage = '';
+  late GoogleMapController mapController;
+
+  final LatLng _center = const LatLng(34.45090825361461, 133.25859497610077);
+  final double _zoom = 10;
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
 
   void _getCurrentLocation() async {
     bool serviceEnabled;
@@ -71,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GPS Example'),
+        title: const Text("SchoolBusTime Driver Edition"),
       ),
       body: Center(
         child: Column(
@@ -80,13 +91,23 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               _locationMessage,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getCurrentLocation,
-              child: Text('获取当前位置'),
+              child: const Text('获取当前位置'),
             ),
+            Container(
+              height: 300,
+              child:
+                GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: _center,
+                      zoom: _zoom,
+                    )
+                )
+            )
           ],
         ),
       ),
